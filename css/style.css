@@ -1,0 +1,274 @@
+.game-board-cell{
+    height:8rem;
+    width: 8rem;
+    margin-right: 0.5rem;
+    border-radius: 1rem;
+    background-color: #f7f7f7;
+}
+.game-tile-cell{
+    height:8rem;
+    width: 8rem;
+    margin-right: 0.5rem;
+    border-radius: 1rem;
+    font-weight:600;
+    color:#471a00;
+    transition: transform 0.08s;
+}
+.newTile{
+    animation-name: generate;
+    animation-duration: 0.08s;
+}
+.merge{
+    animation-name: merge;
+    animation-duration: 0.08s;
+}
+.top{
+    z-index: 1000;  
+}
+.score{
+    height:3.5rem;
+    min-height: 3.5rem;
+    font-size:2rem;
+    font-weight:600;
+    color:#222222
+}
+.b-round{
+    border-radius: 1rem;
+}
+.scoreboard{
+    background-color: #f7f7f7;
+    width:18rem;
+    height: 25rem;
+}
+.scoreboard-title{
+    background-color: #f7f7f7;
+    width:18rem;
+}
+.placenum{
+    width:4rem;
+}
+.fs-3{
+    font-size:3rem !important;
+}
+.fs-25{
+    font-size:2.5rem;
+}
+.fs-15{
+    font-size:1.5rem;
+}
+.fs-1{
+    font-size:1rem !important;
+}
+.p-05{
+    padding: 0.1rem;
+}
+.bt{
+    color:#222222;
+    background-color: white;
+    transition: all 0.2s;
+    white-space: nowrap ;
+    font-weight: 600;
+    height:3.5rem;
+    min-height: 3.5rem;
+    font-size:1.5rem;
+}
+.bt:hover{
+    color:white;
+    background-color: #ff753f;
+}
+button{
+    border:none !important;
+    outline:none !important;
+    padding:0;
+    background-color: transparent;
+    color: inherit;
+    font:inherit;
+    align-items: inherit;
+    text-align: inherit;
+}
+
+@keyframes generate {
+    from {transform: scale(0);}
+    to {transform: scale(1);}
+}
+
+@keyframes merge {
+    0% {transform: scale(1);}
+    50% {transform: scale(1.1);}
+    100% {transform: scale(1);}
+}
+.open_san{
+    font-family:  -apple-system, 'Open Sans',BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.source_san{
+    font-family:  -apple-system, 'Source Sans Pro',BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.noto_san{
+    font-family:  -apple-system, 'Noto Sans',BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.C_modal_backdrop{
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+.C_modal_container{
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    width:100vw;
+    height:100vh;
+    position: fixed;
+    display: flex;
+    left:0;
+    top:0;
+    z-index: 1050;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+}
+.C_modal{
+    display: flex;
+    position:relative;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 1rem;
+    color:#222222;
+}
+
+.modal_title{
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+.modal_board_img{
+    height:8rem;
+    width:8rem;
+}
+.modal_bt{
+    font-size:1.2rem;
+    font-weight:600;
+}
+.modal_icon{
+    font-size:1.5rem;
+}
+.modal_icon.off{
+    color: #eeeeee !important;
+}
+.modal_icon.on{
+    color: #ff753f !important;
+}
+.bt_border.off{
+    border: 0.15rem solid #eeeeee !important;
+}
+.bt_border.on{
+    border: 0.15rem solid #ff753f !important;
+}
+.fc-p{
+    color: #ff753f;
+}
+.bg-w{
+    background-color: white;
+}
+.C_login_input_icon{
+    position: absolute;
+    left: 1rem;
+    color: #a0a0a0;
+    font-size: 1.2rem;
+    top: 0.65rem;
+}
+.C_login_input{
+    padding-left:2.7rem;
+    padding-right:1rem;
+    background-color: #eeeeee;
+    border-radius: 1rem;
+    border:none;
+    height:2.5rem;
+    min-height:2.5rem;
+    font-size: 1.1rem;
+    color: #222222;
+}
+.C_login_input::placeholder{
+    color: #a0a0a0;
+}
+.C_login_input:focus{
+    box-shadow: 0 0 0.2rem #ff753f !important;
+}
+input:focus{
+    outline: none !important;
+}
+/* keyframe start */
+@keyframes FadeInFromTop{
+    from {
+        opacity : 0;
+        transform: translateY(-1rem);
+    }
+    to {
+        opacity : 1;
+        transform: translateY(0rem);
+    }
+}
+@keyframes FadeOutToBottom{
+    from {
+        opacity : 1;
+        transform: translateY(0rem);
+    }
+    to {
+        opacity : 0;
+        transform: translateY(1rem);
+    }
+}
+@keyframes FadeIn{
+    from {
+        opacity : 0;
+    }
+    to {
+        opacity : 1;
+    }
+}
+@keyframes FadeOut{
+    from {
+        opacity : 1;
+    }
+    to {
+        opacity : 0;
+    }
+}
+@keyframes Spin{
+    0% {
+        transform: rotate(-30deg);
+    }
+    50% {
+        transform: rotate(30deg);
+    }
+    100% {
+        transform: rotate(-30deg);
+    }
+}
+/* keyframe end */
+
+/* animation start */
+.custom-fadeIn{
+    animation: FadeInFromTop 0.15s;
+    animation-timing-function: ease-in;
+}
+.custom-fadeOut{
+    animation: FadeOutToBottom 0.15s;
+    animation-timing-function: ease-out;
+}
+.custom-fadeIn-simple{
+    animation: FadeIn 0.15s;
+    animation-timing-function: ease-in;
+}
+.custom-fadeOut-simple{
+    animation: FadeOut 0.15s;
+    animation-timing-function: ease-out;
+}
+.CA_spin{
+    animation: Spin 3s infinite;
+}
+/* animation end */
