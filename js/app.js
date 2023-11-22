@@ -21,7 +21,9 @@ class App extends React.Component {
             boardJSON: "",
             modalOpen: false,
             modalState: '',
-            user: "Sign in"
+            user: "Sign in",
+            sessionKey:"",
+            identityKey:""
         }
         this.newGame = this.newGame.bind(this);
         this.loadGame = this.loadGame.bind(this);
@@ -32,6 +34,7 @@ class App extends React.Component {
         this.showMainModal = this.showMainModal.bind(this);
         this.hideMainModalCB = this.hideMainModalCB.bind(this);
         this.setModalState = this.setModalState.bind(this);
+        this.clearLogin = this.clearLogin.bind(this);
     }
     componentDidUpdate(prevProps, prevState) {
 
@@ -51,6 +54,9 @@ class App extends React.Component {
         this.setState({ boardJSON: string });
     }
     setUsername(username) { this.setState({ user: username }); }
+    clearLogin(){
+        this.setState({user:"Sign in",sessionKey:"",identityKey:""})
+    }
     showMainModal() {
         let modal = document.getElementById('mainModal');
         modal.removeEventListener("animationend", this.hideMainModalCB);
@@ -119,7 +125,7 @@ class App extends React.Component {
                         </button>
                     </div>
                 </div>
-                <Modal hideMainModal={this.hideMainModal} modalState={this.state.modalState} size={this.state.size} newGame={this.newGame} setModalState={this.setModalState} setUsername={this.setUsername} boardJSON={this.state.boardJSON} score={this.state.score} loadGame={this.loadGame} />
+                <Modal hideMainModal={this.hideMainModal} modalState={this.state.modalState} size={this.state.size} newGame={this.newGame} setModalState={this.setModalState} setUsername={this.setUsername} boardJSON={this.state.boardJSON} score={this.state.score} loadGame={this.loadGame} clearLogin={this.clearLogin} setParentState={this.setState}/>
                 <div className="C_modal_backdrop d-none" id="modalBackdrop" />
             </div>
         )
@@ -278,6 +284,10 @@ class Modal extends React.Component {
 
             if (data[0]) {
                 this.props.setUsername(data[0]);
+                this.props.setParentState({
+                    identityKey:data[1],
+                    sessionKey:data[2]
+                });
                 this.props.setModalState("");
                 this.props.hideMainModal();
                 this.setState({
@@ -291,24 +301,27 @@ class Modal extends React.Component {
             this.props.setModalState("missing.signin");
         }
     }
-    async logoutFetch() {
-        this.props.setModalState("loading");
-        let result = await fetch(`${BACKEND_ADDRESS}?request=logout`, {
-            method: 'GET'
-        });
+    logoutFetch() {
+        // this.props.setModalState("loading");
+        // let result = await fetch(`${BACKEND_ADDRESS}?request=logout`, {
+        //     method: 'GET'
+        // });
 
-        if (result.status !== 200) {
-            this.props.setModalState("error");
-            return;
-        }
-        let data = await result.json();
+        // if (result.status !== 200) {
+        //     this.props.setModalState("error");
+        //     return;
+        // }
+        // let data = await result.json();
 
-        if (data[0]) {
-            this.props.setUsername("Sign in");
-            this.props.setModalState("");
-            this.props.hideMainModal();
-        }
-        else this.props.setModalState("error");
+        // if (data[0]) {
+        //     this.props.clearLogin();
+        //     this.props.setModalState("");
+        //     this.props.hideMainModal();
+        // }
+        // else this.props.setModalState("error");
+        this.props.clearLogin();
+        this.props.setModalState("");
+        this.props.hideMainModal();
 
     }
     async saveFetch() {

@@ -28,9 +28,6 @@ try {
         case 'highscore':
             echo highscore();
             break;
-        case 'logout':
-            echo logout();
-            break;
         case 'over':
             echo over();
             break;
@@ -97,25 +94,15 @@ function signin()
     $sql = "UPDATE users SET sessionKey = '$sessoinKey' WHERE username = '$username';";
     $result = mysqli_query($link, $sql);
 
-    setcookie("sessionKey", $sessoinKey, 0, "/", $_SERVER['HTTP_HOST'], false, true);
-    setcookie("identityKey", $identityKey, 0, "/", $_SERVER['HTTP_HOST'], false, true);
-
-    return json_encode([$username]);
-}
-function logout()
-{
-    setcookie("sessionKey", "", 0, "/", $_SERVER['HTTP_HOST'], false, true);
-    setcookie("identityKey", "", 0, "/", $_SERVER['HTTP_HOST'], false, true);
-
-    return json_encode([1]);
+    return json_encode([$username,$identityKey,$sessoinKey]);
 }
 function save()
 {
     $id = verifyKeys();
-    if (!$id) return json_encode(['2']);
+    if (!$id) return json_encode(['']);
 
     $payload = json_decode(file_get_contents('php://input'));
-    if (!$payload->boardJSON || !$payload->size || !isset($payload->score)) return json_encode(['3']);
+    if (!$payload->boardJSON || !$payload->size || !isset($payload->score)) return json_encode(['']);
 
     $link = mysqli_connect(HOST, USER, PASSWORD, DB);
     $board = mysqli_real_escape_string($link, $payload->boardJSON);
@@ -179,10 +166,12 @@ function highscore()
 
 function verifyKeys()
 {
+    $payload = json_decode(file_get_contents('php://input'));
+    if (!$payload->identityKey || !$payload->sessionKey) return False;
 
     $link = mysqli_connect(HOST, USER, PASSWORD, DB);
-    $sessionKey = mysqli_real_escape_string($link, $_COOKIE['sessionKey']);
-    $identityKey = mysqli_real_escape_string($link, $_COOKIE['identityKey']);
+    $sessionKey = mysqli_real_escape_string($link, !$payload->sessionKey);
+    $identityKey = mysqli_real_escape_string($link, $payload->identityKey);
 
     $sql = "SELECT id FROM users WHERE sessionKey = '$sessionKey' AND identityKEy = '$identityKey';";
     $result = mysqli_query($link, $sql);
