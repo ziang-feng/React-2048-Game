@@ -22,8 +22,8 @@ class App extends React.Component {
             modalOpen: false,
             modalState: '',
             user: "Sign in",
-            sessionKey:"",
-            identityKey:""
+            sessionKey: "",
+            identityKey: "",
         }
         this.newGame = this.newGame.bind(this);
         this.loadGame = this.loadGame.bind(this);
@@ -35,6 +35,7 @@ class App extends React.Component {
         this.hideMainModalCB = this.hideMainModalCB.bind(this);
         this.setModalState = this.setModalState.bind(this);
         this.clearLogin = this.clearLogin.bind(this);
+        this.setKeys = this.setKeys.bind(this);
     }
     componentDidUpdate(prevProps, prevState) {
 
@@ -54,8 +55,11 @@ class App extends React.Component {
         this.setState({ boardJSON: string });
     }
     setUsername(username) { this.setState({ user: username }); }
-    clearLogin(){
-        this.setState({user:"Sign in",sessionKey:"",identityKey:""})
+    clearLogin() {
+        this.setState({ user: "Sign in", sessionKey: "", identityKey: "" })
+    }
+    setKeys(sk, ik){
+        this.setState({ sessionKey: sk, identityKey: ik })
     }
     showMainModal() {
         let modal = document.getElementById('mainModal');
@@ -101,7 +105,7 @@ class App extends React.Component {
                             <div className="mr-4 my-auto">{this.state.user}</div>
                         </button>
                     </div>
-                    <Game size={this.state.size} setScore={this.setScore} score={this.state.score} setJSON={this.setJSON} modalOpen={this.state.modalOpen} loadJSON={this.state.loadJSON} setModalState={this.setModalState} showMainModal={this.showMainModal} user={this.state.user} key={`game_${this.state.size}_${this.state.gameNum}_${this.state.loadTS}`} />
+                    <Game size={this.state.size} setScore={this.setScore} score={this.state.score} setJSON={this.setJSON} modalOpen={this.state.modalOpen} loadJSON={this.state.loadJSON} setModalState={this.setModalState} showMainModal={this.showMainModal} user={this.state.user} key={`game_${this.state.size}_${this.state.gameNum}_${this.state.loadTS}`} identityKey={this.state.identityKey} sessionKey={this.state.sessionKey}/>
                     <div className="mt-3 d-flex flex-row w-100">
                         <button className="d-flex flex-row b-round shadow bt mr-auto" onClick={() => { this.setState({ modalState: "newGame" }); this.showMainModal(); }}>
                             <i className="fas fa-undo my-auto ml-4 mr-2"></i>
@@ -125,7 +129,7 @@ class App extends React.Component {
                         </button>
                     </div>
                 </div>
-                <Modal hideMainModal={this.hideMainModal} modalState={this.state.modalState} size={this.state.size} newGame={this.newGame} setModalState={this.setModalState} setUsername={this.setUsername} boardJSON={this.state.boardJSON} score={this.state.score} loadGame={this.loadGame} clearLogin={this.clearLogin} setParentState={this.setState}/>
+                <Modal hideMainModal={this.hideMainModal} modalState={this.state.modalState} size={this.state.size} newGame={this.newGame} setModalState={this.setModalState} setUsername={this.setUsername} boardJSON={this.state.boardJSON} score={this.state.score} loadGame={this.loadGame} clearLogin={this.clearLogin} setKeys={this.setKeys} identityKey={this.state.identityKey} sessionKey={this.state.sessionKey} />
                 <div className="C_modal_backdrop d-none" id="modalBackdrop" />
             </div>
         )
@@ -242,7 +246,7 @@ class Modal extends React.Component {
             this.props.setModalState("loading");
             let result = await fetch(`${BACKEND_ADDRESS}?request=signup`, {
                 method: 'POST',
-                body: JSON.stringify({ username: this.state.usernameSU, password: this.state.passwordSU })
+                body: JSON.stringify({ username: this.state.usernameSU, password: this.state.passwordSU, sessionKey: this.props.sessionKey, identityKey: this.props.identityKey })
             });
             if (result.status !== 200) {
                 this.props.setModalState("error");
@@ -273,7 +277,7 @@ class Modal extends React.Component {
             this.props.setModalState("loading");
             let result = await fetch(`${BACKEND_ADDRESS}?request=signin`, {
                 method: 'POST',
-                body: JSON.stringify({ username: this.state.username, password: this.state.password })
+                body: JSON.stringify({ username: this.state.username, password: this.state.password, sessionKey: this.props.sessionKey, identityKey: this.props.identityKey })
             });
 
             if (result.status !== 200) {
@@ -284,10 +288,7 @@ class Modal extends React.Component {
 
             if (data[0]) {
                 this.props.setUsername(data[0]);
-                this.props.setParentState({
-                    identityKey:data[1],
-                    sessionKey:data[2]
-                });
+                this.props.setKeys(data[2],data[1]);
                 this.props.setModalState("");
                 this.props.hideMainModal();
                 this.setState({
@@ -328,7 +329,7 @@ class Modal extends React.Component {
         this.props.setModalState("loading");
         let result = await fetch(`${BACKEND_ADDRESS}?request=save`, {
             method: 'POST',
-            body: JSON.stringify({ boardJSON: this.props.boardJSON, size: this.props.size, score: this.props.score })
+            body: JSON.stringify({ boardJSON: this.props.boardJSON, size: this.props.size, score: this.props.score,sessionKey: this.props.sessionKey, identityKey: this.props.identityKey })
         });
 
         if (result.status !== 200) {
@@ -344,7 +345,8 @@ class Modal extends React.Component {
     }
     async loadFetch() {
         let result = await fetch(`${BACKEND_ADDRESS}?request=load`, {
-            method: 'GET'
+            method: 'POST',
+            body: JSON.stringify({ sessionKey: this.props.sessionKey, identityKey: this.props.identityKey })
         });
 
         if (result.status !== 200) {
@@ -360,7 +362,8 @@ class Modal extends React.Component {
     }
     async scoreFetch() {
         let result = await fetch(`${BACKEND_ADDRESS}?request=highscore`, {
-            method: 'GET'
+            method: 'POST',
+            body: JSON.stringify({ sessionKey: this.props.sessionKey, identityKey: this.props.identityKey })
         });
 
         if (result.status !== 200) {
@@ -556,7 +559,7 @@ class Modal extends React.Component {
                     if (j == 1) place = <i className="fas fa-trophy my-auto placenum" style={{ color: "#ff753f" }}></i>;
                     else if (j == 2) place = <i className="fas fa-trophy my-auto placenum" style={{ color: "#ffad6d" }}></i>;
                     else if (j == 3) place = <i className="fas fa-trophy my-auto placenum" style={{ color: "#ffe49a" }}></i>;
-                    
+
                     scores.push(
                         <div className="d-flex flex-row my-2 mx-3" key={"sbc" + j}>
                             {place}
@@ -747,7 +750,7 @@ class Game extends React.Component {
         if (this.props.user != "Sign in") {
             let result = await fetch(`${BACKEND_ADDRESS}?request=over`, {
                 method: 'POST',
-                body: JSON.stringify({ score: this.props.score, size: this.props.size })
+                body: JSON.stringify({ score: this.props.score, size: this.props.size, sessionKey: this.props.sessionKey, identityKey: this.props.identityKey })
             });
         }
     }

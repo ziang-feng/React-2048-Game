@@ -75,7 +75,7 @@ function signin()
 
     $link = mysqli_connect(HOST, USER, PASSWORD, DB);
     $username = mysqli_real_escape_string($link, $payload->username);
-    $sessoinKey = getToken(32);
+    $sessionKey = getToken(32);
 
     $result = preg_replace('/[^0-9a-zA-Z]/', '', $username);
     if ($result != $username) return json_encode(['']);
@@ -91,10 +91,10 @@ function signin()
     $row = mysqli_fetch_assoc($result);
     $identityKey = $row['identityKey'];
 
-    $sql = "UPDATE users SET sessionKey = '$sessoinKey' WHERE username = '$username';";
+    $sql = "UPDATE users SET sessionKey = '$sessionKey' WHERE username = '$username';";
     $result = mysqli_query($link, $sql);
 
-    return json_encode([$username,$identityKey,$sessoinKey]);
+    return json_encode([$username,$identityKey,$sessionKey]);
 }
 function save()
 {
@@ -170,7 +170,7 @@ function verifyKeys()
     if (!$payload->identityKey || !$payload->sessionKey) return False;
 
     $link = mysqli_connect(HOST, USER, PASSWORD, DB);
-    $sessionKey = mysqli_real_escape_string($link, !$payload->sessionKey);
+    $sessionKey = mysqli_real_escape_string($link, $payload->sessionKey);
     $identityKey = mysqli_real_escape_string($link, $payload->identityKey);
 
     $sql = "SELECT id FROM users WHERE sessionKey = '$sessionKey' AND identityKEy = '$identityKey';";
