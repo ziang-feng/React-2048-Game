@@ -6,10 +6,10 @@ header("Access-Control-Allow-Methods: GET, POST");
 
 date_default_timezone_set('America/Toronto');
 
-const HOST = "localhost";
-const USER = "inf452api";
-const PASSWORD = "game@452A1";
-const DB = "INF452A1";
+const HOST = "db";
+const USER = "gameAPI";
+const PASSWORD = "gamer@2048";
+const DB = "Game2048";
 
 try {
     switch ($_GET['request']) {
@@ -112,10 +112,10 @@ function logout()
 function save()
 {
     $id = verifyKeys();
-    if (!$id) return json_encode(['']);
+    if (!$id) return json_encode(['2']);
 
     $payload = json_decode(file_get_contents('php://input'));
-    if (!$payload->boardJSON || !$payload->size || !isset($payload->score)) return json_encode(['']);
+    if (!$payload->boardJSON || !$payload->size || !isset($payload->score)) return json_encode(['3']);
 
     $link = mysqli_connect(HOST, USER, PASSWORD, DB);
     $board = mysqli_real_escape_string($link, $payload->boardJSON);
